@@ -1,0 +1,110 @@
+.page { /* conteneur principal */
+  position: relative; /* sert de repère pour les éléments à l'intérieur */
+  height: 100vh; /* hauteur de l'écran (anciens navigateurs) */
+  height: 100dvh; /* hauteur exacte de l'écran, même sur mobile */
+  padding: 12px 16px; /* espace intérieur : 12px haut/bas, 16px gauche/droite */
+  box-sizing: border-box; /* le padding est compté dans la hauteur : pas de débordement */
+  display: flex; /* active la disposition flexible */
+  flex-direction: column; /* titre, contenu et verset s'empilent verticalement */
+  overflow: hidden; /* cache ce qui dépasse : aucun scroll de la page */
+  color: #fff; /* texte blanc */
+  font-family: 'Segoe UI', Arial, sans-serif; /* police utilisée */
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8); /* ombre sous le texte pour qu'il reste lisible */
+} /* fin de .page */
+
+.bg-flou { /* couche 1 : image floutée */
+  position: fixed; /* reste en place, indépendante du contenu */
+  inset: 0; /* couvre tout l'écran (haut, bas, gauche, droite à 0) */
+  background-size: cover; /* l'image remplit tout l'écran */
+  background-position: center; /* image centrée */
+  filter: blur(30px); /* applique un flou fort */
+  transform: scale(1.1); /* agrandit un peu pour cacher les bords flous */
+  z-index: 0; /* tout au fond */
+} /* fin de .bg-flou */
+
+.bg-image { /* couche 2 : image nette et entière */
+  position: fixed; /* reste en place */
+  inset: 0; /* couvre tout l'écran */
+  background-size: contain; /* image entière visible, sans aucune coupure */
+  background-repeat: no-repeat; /* l'image ne se répète pas */
+  background-position: center; /* image centrée */
+  z-index: 0; /* au fond, par-dessus le flou car placée après dans le HTML */
+} /* fin de .bg-image */
+
+.page > *:not(.bg-flou):not(.bg-image) { position: relative; z-index: 1; } /* tout le contenu passe devant les images de fond */
+
+.titre { text-align: center; color: #e8c872; font-weight: 300; margin: 0 0 8px; font-size: 1.3rem; } /* titre centré, doré, fin, petit, avec peu de marge */
+
+.layout { /* range le lecteur et la liste */
+  flex: 1; /* prend toute la hauteur restante entre le titre et le verset */
+  min-height: 0; /* permet à la liste de défiler à l'intérieur au lieu de déborder */
+  display: flex; /* disposition flexible */
+  flex-direction: column; /* sur mobile : lecteur au-dessus, liste en dessous */
+  justify-content: space-between; /* pousse le lecteur en haut et la liste en bas */
+  gap: 10px; /* espace entre les deux blocs */
+  width: 100%; /* prend toute la largeur */
+  max-width: 1400px; /* largeur maximale sur grand écran */
+  margin: 0 auto; /* centre le tout horizontalement */
+} /* fin de .layout */
+
+.player { /* bloc du lecteur */
+  text-align: center; /* texte et boutons centrés */
+  align-self: stretch; /* le bloc prend toute la largeur disponible */
+  background: rgba(0, 0, 0, 0.35); /* fond noir transparent pour lire le texte */
+  border-radius: 16px; /* coins arrondis */
+  padding: 10px 16px; /* espace intérieur */
+} /* fin de .player */
+.player h2 { margin: 0; font-size: 1.2rem; } /* titre du chant : sans marge, taille moyenne */
+
+.artist { opacity: 0.85; margin: 2px 0 0; } /* artiste légèrement transparent, collé au titre */
+
+.progress { display: flex; align-items: center; gap: 10px; max-width: 420px; margin: 8px auto; } /* ligne temps/barre/durée, alignée, centrée, limitée en largeur */
+.progress input { flex: 1; accent-color: #e8c872; } /* la barre prend la place libre, colorée en doré */
+
+.controls { display: flex; justify-content: center; align-items: center; gap: 20px; } /* boutons alignés, centrés, espacés */
+.controls button { /* style de tous les boutons */
+  background: rgba(255, 255, 255, 0.2); /* fond blanc transparent */
+  border: none; color: #fff; /* pas de bordure, icône blanche */
+  width: 48px; height: 48px; border-radius: 50%; /* taille 48px, forme ronde */
+  font-size: 20px; cursor: pointer; /* taille de l'icône, curseur en main */
+} /* fin de .controls button */
+.controls .play { width: 62px; height: 62px; font-size: 26px; background: #e8c872; color: #0d0b24; } /* bouton play plus gros, doré, icône sombre */
+
+.playlist { /* carte de la liste des chants */
+  background: rgba(0, 0, 0, 0.45); /* fond noir transparent */
+  border-radius: 16px; /* coins arrondis */
+  padding: 10px; /* espace intérieur */
+  max-height: 30vh; /* ne dépasse jamais 30% de la hauteur de l'écran */
+  overflow-y: auto; /* la liste défile seule si elle est trop longue */
+} /* fin de .playlist */
+.playlist h3 { margin: 2px 8px 8px; color: #e8c872; } /* titre de la liste en doré, petites marges */
+
+.item { /* une ligne de la liste */
+  display: flex; align-items: center; gap: 12px; /* contenu en ligne, aligné, espacé */
+  width: 100%; padding: 8px 10px; /* toute la largeur, espace intérieur */
+  background: transparent; border: none; border-radius: 10px; /* sans fond ni bordure, coins arrondis */
+  color: inherit; text-align: left; cursor: pointer; /* garde la couleur du texte, aligné à gauche, curseur en main */
+} /* fin de .item */
+.item:hover { background: rgba(255, 255, 255, 0.15); } /* léger éclaircissement au survol */
+.item.active { background: rgba(232, 200, 114, 0.3); } /* ligne du chant actuel surlignée en doré */
+.item .info { flex: 1; display: flex; flex-direction: column; } /* titre au-dessus de l'artiste, prend la place libre */
+.item small { opacity: 0.7; } /* artiste plus discret */
+
+.verset { /* verset du bas */
+  text-align: center; font-style: italic; /* centré et en italique */
+  margin: 8px 0 0; font-size: 0.85rem; /* petite marge au-dessus, texte un peu plus petit */
+} /* fin de .verset */
+
+@media (min-width: 800px) { /* règles appliquées seulement sur grand écran (PC) */
+  .layout { flex-direction: row; align-items: flex-end; justify-content: space-between; } /* passe en ligne : lecteur à gauche, liste à droite, alignés en bas */
+  .player { width: 420px; align-self: flex-end; } /* lecteur de largeur fixe, placé en bas */
+  .playlist { width: 340px; max-height: 100%; align-self: stretch; margin-left: auto; } /* liste de largeur fixe, pleine hauteur, repoussée à droite */
+} /* fin de la règle PC */
+
+.titre{
+  font-weight: bold;
+  font-size: 30px;
+  font-style: italic;
+  color: #fff;
+  
+}

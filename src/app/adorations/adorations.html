@@ -1,0 +1,43 @@
+<div class="page"> <!-- conteneur principal de toute la page -->
+  <div class="bg-flou" [style.background-image]="'url(' + currentSong().image + ')'"></div> <!-- fond flou : même image que le chant, remplit les côtés vides -->
+  <div class="bg-image" [style.background-image]="'url(' + currentSong().image + ')'"></div> <!-- image nette et entière, par-dessus le flou -->
+
+  <h1 class="titre">Adoration au très Saint Sacrement</h1> <!-- titre de la page -->
+
+  <div class="layout"> <!-- zone qui range le lecteur et la liste -->
+    <section class="player"> <!-- bloc du lecteur -->
+      <h2>{{ currentSong().title }}</h2> <!-- titre du chant en cours -->
+      <p class="artist">{{ currentSong().artist }}</p> <!-- artiste du chant en cours -->
+
+      <div class="progress"> <!-- ligne de la barre de progression -->
+        <span>{{ formatTime(currentTime()) }}</span> <!-- temps déjà écoulé -->
+        <input type="range" min="0" [max]="duration()" [value]="currentTime()" (input)="seek($event)" /> <!-- barre déplaçable, appelle seek() quand on la bouge -->
+        <span>{{ formatTime(duration()) }}</span> <!-- durée totale du chant -->
+      </div> <!-- fin de la progression -->
+
+      <div class="controls"> <!-- zone des boutons -->
+        <button (click)="prev()" aria-label="Précédent">⏮</button> <!-- bouton : chant précédent -->
+        <button class="play" (click)="togglePlay()" [attr.aria-label]="isPlaying() ? 'Pause' : 'Lecture'"> <!-- gros bouton play/pause -->
+          {{ isPlaying() ? '⏸' : '▶' }} <!-- affiche ⏸ si ça joue, ▶ sinon -->
+        </button> <!-- fin du bouton play/pause -->
+        <button (click)="next()" aria-label="Suivant">⏭</button> <!-- bouton : chant suivant -->
+      </div> <!-- fin des boutons -->
+    </section> <!-- fin du lecteur -->
+
+    <section class="playlist"> <!-- bloc de la liste des chants -->
+      <h3>Chants</h3> <!-- titre de la liste -->
+      @for (song of songs; track song.src; let i = $index) { <!-- répète pour chaque chant, i = sa position -->
+        <button class="item" [class.active]="i === currentIndex()" (click)="selectSong(i)"> <!-- ligne cliquable, surlignée si c'est le chant actuel -->
+          <span class="num">{{ i + 1 }}</span> <!-- numéro du chant (on commence à 1) -->
+          <span class="info"> <!-- bloc titre + artiste -->
+            <strong>{{ song.title }}</strong> <!-- titre en gras -->
+            <small>{{ song.artist }}</small> <!-- artiste en petit -->
+          </span> <!-- fin du bloc titre + artiste -->
+          @if (i === currentIndex() && isPlaying()) { <span>🔊</span> } <!-- icône 🔊 sur le chant qui joue -->
+        </button> <!-- fin de la ligne -->
+      } <!-- fin de la boucle -->
+    </section> <!-- fin de la liste -->
+  </div> <!-- fin de la zone layout -->
+
+  <p class="verset"><marquee direction="right" >« Venez, prosternons-nous et humilions-nous, fléchissons le genou devant l'Éternel, notre créateur ! » — Psaume 95:6</marquee></p> <!-- verset affiché en bas -->
+</div> <!-- fin du conteneur principal -->
